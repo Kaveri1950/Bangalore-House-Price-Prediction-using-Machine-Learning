@@ -1,1 +1,1 @@
-# Bangalore-House-Price-Prediction-using-Machine-Learning
+# Bangalore House Price Prediction using Machine Learning
