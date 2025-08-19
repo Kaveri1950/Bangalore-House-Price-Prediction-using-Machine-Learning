@@ -20,10 +20,7 @@ The workflow includes:
 This project demonstrates the **end-to-end machine learning pipeline**: from raw dataset → preprocessing → feature engineering → model building → prediction.
 
 
-
----
-
-## 📊 Dataset
+## Dataset
 The dataset used in this project is taken from **Kaggle**:  
 [Bengaluru House Prices Dataset](https://www.kaggle.com/datasets/amitabhajoy/bengaluru-house-price-data)
 
@@ -49,13 +46,5 @@ The notebook includes several plots to better understand the dataset and the rel
 - **Price Distribution by Location**: Average price per square foot for top locations in Bangalore.  
 - **BHK vs Price**: Distribution of prices for different bedroom counts.  
 - **Correlation Heatmap**: Showing relationships between numerical features (`price`, `bath`, `total_sqft`, etc.).  
-
-Example:  
-
-| ![Price vs Sqft](images/price_sqft.png) | ![Price per Location](images/location_price.png) |
-|------------------------------------------|--------------------------------------------------|
-| *Scatter plot of price vs area*         | *Average price by location*                      |
-
-*(Note: Add the plots to an `images/` folder and update the paths accordingly.)*
 
 
