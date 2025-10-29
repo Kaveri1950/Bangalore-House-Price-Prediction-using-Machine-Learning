@@ -1,50 +1,153 @@
 # Bangalore House Price Prediction using Machine Learning
-#### This code is inspired by youtube tutorial codebasics
+
+> **Note:** This code is an advanced extension of the popular Codebasics YouTube tutorial.
 
 ## Overview
-This project is a **data science regression analysis** that aims to predict **housing prices in Bangalore** using machine learning techniques.  
-Real estate pricing depends on multiple factors such as location, property size, number of bathrooms, and amenities. This project explores how these features influence property prices and builds a regression model that can provide reasonably accurate predictions.  
 
-The workflow includes:
-- **Data Collection**: The dataset is taken from Kaggle and contains details of various properties in Bangalore.  
-- **Data Cleaning**: Handling missing values, standardizing inconsistent formats, and removing irrelevant columns.  
-- **Feature Engineering**:  
-  - Converting textual features into numerical values  
-  - Reducing dimensionality by grouping rare locations  
-  - Handling outliers in `total_sqft` and `price`  
-- **Exploratory Data Analysis (EDA)**: Visualizing the distribution of prices, area types, availability trends, and relationship between features.  
-- **Model Building**: Training regression models (e.g., Linear Regression, Lasso, Decision Tree) to predict property prices.  
-- **Model Evaluation**: Measuring performance using metrics such as **R² score** and comparing results across models.  
-- **Prediction**: The final model allows users to input property details (location, BHK, sqft, bathrooms) and get a predicted price.  
-
-This project demonstrates the **end-to-end machine learning pipeline**: from raw dataset → preprocessing → feature engineering → model building → prediction.
-
+This project is a **data science regression pipeline** that predicts **housing prices in Bangalore** using modern machine learning models, including stacking ensembles and neural networks.  
+The workflow covers:  
+- Robust data cleaning  
+- Feature engineering  
+- Dimensionality reduction for categories  
+- Outlier analysis  
+- Extensive EDA visualizations  
+- Multiple regression models with grid search  
+- Ensemble methods (Stacking, XGBoost) & Neural Network implementation  
+- Saved model for API deployment
 
 ## Dataset
-The dataset used in this project is taken from **Kaggle**:  
-[Bengaluru House Prices Dataset](https://www.kaggle.com/datasets/amitabhajoy/bengaluru-house-price-data)
 
-It contains the following features:
+Source: [Bengaluru House Prices Dataset on Kaggle](https://www.kaggle.com/datasets/amitabhajoy/bengaluru-house-price-data)
 
-- **area_type** → Type of the area (e.g., Super built-up, Plot, Built-up, Carpet)  
-- **availability** → When the property is available (Ready To Move / Date)  
-- **location** → Location in Bangalore  
-- **size** → Number of BHK/Bedrooms  
-- **society** → Name of the society/complex (if available)  
-- **total_sqft** → Total area (in square feet)  
-- **bath** → Number of bathrooms  
-- **balcony** → Number of balconies  
-- **price** → Price of the property (in lakhs)  
+Key features:
+- area_type: Type of area (Super built-up, Plot, etc.)
+- availability: Ready To Move/date
+- location: Bangalore locality  
+- size: BHK/bedrooms  
+- society: Society/complex name  
+- total_sqft: Area in sq.ft  
+- bath: Bathrooms  
+- balcony: Balconies  
+- price: Price (lakhs)
 
+## Data Preparation & Cleaning
 
+- Unnecessary columns dropped, missing values handled.
+- Bedroom/BHK feature extracted from raw text.
+- Square foot cleaned by handling ranges (e.g., 2100–2850) and odd formats.  
+- New feature `price_per_sqft` calculated.
+- Dimensionality reduction on locations: rare locations tagged "other".
+- Outliers removed based on inconsistent room/area/bathroom data, standard deviation, and price-per-sqft anomalies.
+
+## Feature Engineering
+
+- Minimum sq.ft per BHK set to 300 for realistic properties.
+- One-hot encoding for location (reduces feature space).
+- Final feature table: Numeric features + location dummies.
+
+## Exploratory Data Analysis (EDA)
+
+- Scatter plots: Price vs Sq.Ft, BHK vs Price for specific localities.
+- Histograms: Price per sq.ft, bathroom counts.
+- Correlation heatmap of all numerical features.
+- Outlier visualization and removal steps.
+
+## Model Building & Evaluation
+
+### Individual Models
+
+Trained and compared:
+- Linear Regression
+- Lasso Regression
+- Decision Tree Regressor
+- Random Forest Regressor
+- Support Vector Regression (SVR, with scaling)
+- XGBoost Regressor
+
+| Model               | Test R² Score | CV Mean R² |
+|---------------------|--------------:|-----------:|
+| Linear Regression   |   ~0.80       |   ~0.85    |
+| Lasso Regression    |   ~0.69       |   ~0.73    |
+| Decision Tree       |   ~0.65       |   ~0.72    |
+| Random Forest       |   ~0.70       |   ~0.78    |
+| SVM                 |   ~0.79       |   ~0.84    |
+| XGBoost             |   ~0.67       |   --       |
+
+### Stacking Ensemble Models
+
+Stacked and blended the above base models using scikit-learn and XGBoost:
+
+- StackingRegressor with base models: LinearRegression, Lasso, DecisionTree, RF, SVM, KNN, XGB.
+- Meta-model: LinearRegression and XGBoost (for nonlinear stacking).
+- Achieved R² scores up to **0.79** (ensemble), reducing RMSE and MAE.
+
+### Deep Learning (Neural Networks)
+
+- Built Keras/Tensorflow regression networks.
+- Applied advanced callbacks (early stopping, ReduceLROnPlateau).
+- Achieved **R² up to 0.86**, MAE ~15, RMSE ~36 (best configuration).
+
+#### Sample NN Architecture:
+
+```python
+model = Sequential([
+  Dense(256, activation='relu', input_shape=(n_features,)),
+  BatchNormalization(),
+  Dropout(0.30),
+  Dense(128, activation='relu'),
+  BatchNormalization(),
+  Dropout(0.25),
+  Dense(64, activation='relu'),
+  BatchNormalization(),
+  Dropout(0.20),
+  Dense(1, activation='linear')
+])
+```
+
+## Model Export & Prediction API
+
+- Exported best model with pickle:  
+  `banglore_home_prices_model.pickle`
+- Saved columns/features with  
+  `columns.json`
+- Provided a universal `predict_price()` API to access predictions for any location/BHK/bath/sq.ft.
+
+## Usage
+
+1. Install required libraries:
+
+    ```bash
+    pip install numpy pandas scikit-learn xgboost matplotlib tensorflow
+    ```
+
+2. Clone/download repo and Kaggle dataset.
+
+3. Train/evaluate:
+    - Run Jupyter notebook or Python scripts.
+
+4. Predict with API:
+
+    ```python
+    price = predict_price("JP Nagar", sq_ft, bath, bhk, model)
+    ```
+
+5. Deploy: Use exported pickle and columns.json for backend or web API.
 
 ## Example Visualizations
 
-The notebook includes several plots to better understand the dataset and the relationships between features:
+- Price vs Sq.Ft scatter: `plt.scatter(df['total_sqft'], df['price'])`
+- Location-wise price-per-sqft barplots
+- Histogram of price_per_sqft, bathroom count
+- Heatmaps of feature correlations
 
-- **Price vs Square Feet**: Scatter plot showing how house prices scale with area.  
-- **Price Distribution by Location**: Average price per square foot for top locations in Bangalore.  
-- **BHK vs Price**: Distribution of prices for different bedroom counts.  
-- **Correlation Heatmap**: Showing relationships between numerical features (`price`, `bath`, `total_sqft`, etc.).  
+## Key Highlights
 
+- End-to-end data science/machine learning workflow.
+- Stacking ensembles, XGBoost, and Deep Learning performance comparison.
+- Robust handling of categorical and numerical features.
+- API-ready for web apps or production deployment.
 
+```
+```
+
+You can copy and paste this directly into your README file for a thorough, clear, and modern documentation of your current approach.
