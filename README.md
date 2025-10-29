@@ -1,7 +1,5 @@
 # Bangalore House Price Prediction using Machine Learning
 
-> **Note:** This code is an advanced extension of the popular Codebasics YouTube tutorial.
-
 ## Overview
 
 This project is a **data science regression pipeline** that predicts **housing prices in Bangalore** using modern machine learning models, including stacking ensembles and neural networks.  
@@ -87,22 +85,6 @@ Stacked and blended the above base models using scikit-learn and XGBoost:
 - Applied advanced callbacks (early stopping, ReduceLROnPlateau).
 - Achieved **R² up to 0.86**, MAE ~15, RMSE ~36 (best configuration).
 
-#### Sample NN Architecture:
-
-```python
-model = Sequential([
-  Dense(256, activation='relu', input_shape=(n_features,)),
-  BatchNormalization(),
-  Dropout(0.30),
-  Dense(128, activation='relu'),
-  BatchNormalization(),
-  Dropout(0.25),
-  Dense(64, activation='relu'),
-  BatchNormalization(),
-  Dropout(0.20),
-  Dense(1, activation='linear')
-])
-```
 
 ## Model Export & Prediction API
 
@@ -138,16 +120,4 @@ model = Sequential([
 - Price vs Sq.Ft scatter: `plt.scatter(df['total_sqft'], df['price'])`
 - Location-wise price-per-sqft barplots
 - Histogram of price_per_sqft, bathroom count
-- Heatmaps of feature correlations
-
-## Key Highlights
-
-- End-to-end data science/machine learning workflow.
-- Stacking ensembles, XGBoost, and Deep Learning performance comparison.
-- Robust handling of categorical and numerical features.
-- API-ready for web apps or production deployment.
-
-```
-```
-
-You can copy and paste this directly into your README file for a thorough, clear, and modern documentation of your current approach.
+- Heatmaps of feature correlation.
